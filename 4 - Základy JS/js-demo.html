@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript demo</title>
+</head>
+<body>
+    <h1>JS Demo</h1>
+    <button onclick="alert('Ahoj!')">Stlač ma!</button>
+    <button onclick="printMessage()">Vytlač správu</button>
+    <button onclick="alertMessage()">Vytlač správu 2</button>
+    <button onclick="alertMessageMultiline()">Vytlač správu 3</button>
+    <button onclick="addMessage()">Pridať správu</button>
+    <button onclick="object.alert('Z objektu')">Alert z objektu</button>
+
+    <script>
+        // JS code
+        // alert('Hello!');
+        let var1 = 100;
+        var var2 = 'Streda';
+
+        console.log(var1, var2);
+
+        if (true) {
+            let var3 = 200;
+            var var4 = 'Štvrtok';
+            console.log(var3, var4);
+        }
+        console.log(var4);
+
+        const const1 = 99;
+        // const1 += 1; // throws error
+
+        function printMessage() {
+            console.log('Ahoj toto je z funkcie!');
+        }
+
+        const alertMessage = () => alert('Ahoj toto je z lambdy!');
+        const alertMessageMultiline = () => {
+            alert('Ahoj toto je z druhej lambdy!');
+        };
+
+        const messages = [];
+        const addMessage = () => {
+            const message = window.prompt('Vlož správu:');
+            messages.push(message);
+        };
+
+        const object = {
+            key: 42,
+            'key 2': 3.14,
+
+            alert: (message) => alert(message),
+
+            printMe() {
+                console.log('Print me', this.key, this['key 2']);
+            },
+
+            get asString() {
+                // return "Key: " + this.key + "; Key 2: " + this['key 2'] + ";";
+                return `Key: ${this.key}; Key 2: ${this['key 2']};`;
+            },
+        };
+        console.log(object['key'], object.key);
+        console.log(object.printMe());
+    </script>
+</body>
+</html>

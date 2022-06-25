@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo app - Vue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="app" class="max-w-sm mx-auto">
+        <form @submit.prevent="addItem" class="flex items-center my-10">
+            <input
+                v-model="input"
+                type="text"
+                class="border-l border-t border-b border-gray-200 rounded-l-md w-full text-base md:text-lg px-3 py-2" placeholder="Write your task here..."
+            >
+            <button
+                type="submit"
+                class="bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white font-bold capitalize px-3 py-2 text-base md:text-lg rounded-r-md border-t border-r border-b border-orange-500"
+            >
+                Add
+            </button>
+        </form>
+
+        <ul class="space-y-4">
+            <li v-for="item in todoListItems" class="flex items-center text-lg space-x-2">
+                <input
+                    v-model="item.finished"
+                    @change="saveData"
+                    type="checkbox"
+                    name="checked"
+                    class="h-4 w-4 accent-orange-500"
+                >
+                <span id="item-title" class="flex-1" :class="item.finished ? 'line-through' : ''">{{ item.name }}</span>
+                <span class="cursor-pointer" @click="removeItem(item.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const { createApp } = Vue;
+
+        const app = createApp({
+            data() {
+                return {
+                    input: null,
+                    todoListItems: [],
+                };
+            },
+            created() {
+                const todoListItemsJson = localStorage.getItem('todoList');
+                this.todoListItems = todoListItemsJson
+                    ? JSON.parse(todoListItemsJson)
+                    : [];
+            },
+            methods: {
+                addItem() {
+                    // If nothing was typed in, we will not create a new ToDo item
+                    if (!this.input) {
+                        return;
+                    }
+
+                    // Add item to the array
+                    // Once it is there, it will be automatically
+                    // rendered to HTML by Vue.js
+                    const itemObject = {
+                        id: Math.floor(Math.random() * 1_000_000),
+                        name: this.input,
+                        finished: false,
+                    };
+                    this.todoListItems.push(itemObject);
+                    
+                    this.saveData();
+
+                    // Cleans entered input, so that user will be able to type
+                    // new todo without having to remove previous input
+                    this.input = '';
+                },
+                removeItem(id) {
+                    // All we need to do is to remove item from
+                    // the source array and it will be removed
+                    // from HTML as well
+                    const index = this.todoListItems.findIndex(item => item.id === id);
+                    this.todoListItems.splice(index, 1);
+                    
+                    this.saveData();
+                },
+                saveData() {
+                    const json = JSON.stringify(this.todoListItems);
+                    localStorage.setItem('todoList', json);
+                },
+            },
+            watch: {
+                todoListItems: {
+                    handler: () => console.log('changed'),
+                    deep: true,
+                },
+            },
+        }).mount('#app');
+    </script>
+</body>
+</html>
